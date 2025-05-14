@@ -1,0 +1,27 @@
+Disk Scheduling Algorithms Simulation
+Initial Head Position: 2255
+Previous Request: 1723
+
+FCFS:
+Order: 2055 1175 2304 2700 513 1680 256 1401 4922 3692 
+Total Distance: 13279 cylinders
+
+SSTF:
+Order: 2304 2055 1680 1401 1175 513 256 2700 3692 4922 
+Total Distance: 6763 cylinders
+
+SCAN:
+Order: 2304 2700 3692 4922 2055 1680 1401 1175 513 256 
+Total Distance: 7487 cylinders
+
+LOOK:
+Order: 2304 2700 3692 4922 2055 1680 1401 1175 513 256 
+Total Distance: 7333 cylinders
+
+C-SCAN:
+Order: 2304 2700 3692 4922 256 513 1175 1401 1680 2055 
+Total Distance: 9798 cylinders
+
+C-LOOK:
+Order: 2304 2700 3692 4922 256 513 1175 1401 1680 2055 
+Total Distance: 9132 cylinders
