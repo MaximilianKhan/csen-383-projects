@@ -38,8 +38,6 @@ void sstf(int head, int requests[], int order[], int *total_distance) {
     for (int i = 0; i < REQUESTS; i++) {
         int min_dist = CYLINDERS + 1;
         int min_idx = -1;
-
-        // Find closest unvisited request
         for (int j = 0; j < REQUESTS; j++) {
             if (!visited[j]) {
                 int dist = abs_diff(current, temp[j]);
@@ -49,7 +47,6 @@ void sstf(int head, int requests[], int order[], int *total_distance) {
                 }
             }
         }
-
         visited[min_idx] = 1;
         order[i] = temp[min_idx];
         *total_distance += min_dist;
@@ -59,12 +56,9 @@ void sstf(int head, int requests[], int order[], int *total_distance) {
 
 // SCAN: Move from 0 to max, then reverse
 void scan(int head, int requests[], int order[], int *total_distance, int prev) {
-    int temp[REQUESTS + 2]; // Include head and boundaries if needed
-    int direction = (head > prev) ? 1 : -1; // Determine initial direction
-    int idx = 0;
-
-    // Sort requests
+    int temp[REQUESTS];
     copy_requests(requests, temp, REQUESTS);
+    int direction = (head > prev) ? 1 : -1;
     for (int i = 0; i < REQUESTS - 1; i++) {
         for (int j = 0; j < REQUESTS - i - 1; j++) {
             if (temp[j] > temp[j + 1]) {
@@ -74,13 +68,10 @@ void scan(int head, int requests[], int order[], int *total_distance, int prev) 
             }
         }
     }
-
     *total_distance = 0;
     int current = head;
     int order_idx = 0;
-
     if (direction == 1) {
-        // Move right (towards 4999)
         for (int i = 0; i < REQUESTS; i++) {
             if (temp[i] >= head) {
                 order[order_idx++] = temp[i];
@@ -88,32 +79,10 @@ void scan(int head, int requests[], int order[], int *total_distance, int prev) 
                 current = temp[i];
             }
         }
-        // Move to 4999
         *total_distance += abs_diff(current, 4999);
         current = 4999;
-        // Move left (towards 0)
         for (int i = REQUESTS - 1; i >= 0; i--) {
             if (temp[i] < head) {
-                order[order_idx++] = temp[i];
-                *total_distance += abs_diff(current, temp[i]);
-                current = temp[i];
-            }
-        }
-    } else {
-        // Move left (towards 0)
-        for (int i = REQUESTS - 1; i >= 0; i--) {
-            if (temp[i] <= head) {
-                order[order_idx++] = temp[i];
-                *total_distance += abs_diff(current, temp[i]);
-                current = temp[i];
-            }
-        }
-        // Move to 0
-        *total_distance += abs_diff(current, 0);
-        current = 0;
-        // Move right (towards 4999)
-        for (int i = 0; i < REQUESTS; i++) {
-            if (temp[i] > head) {
                 order[order_idx++] = temp[i];
                 *total_distance += abs_diff(current, temp[i]);
                 current = temp[i];
@@ -127,9 +96,6 @@ void look(int head, int requests[], int order[], int *total_distance, int prev) 
     int temp[REQUESTS];
     copy_requests(requests, temp, REQUESTS);
     int direction = (head > prev) ? 1 : -1;
-    int idx = 0;
-
-    // Sort requests
     for (int i = 0; i < REQUESTS - 1; i++) {
         for (int j = 0; j < REQUESTS - i - 1; j++) {
             if (temp[j] > temp[j + 1]) {
@@ -139,13 +105,10 @@ void look(int head, int requests[], int order[], int *total_distance, int prev) 
             }
         }
     }
-
     *total_distance = 0;
     int current = head;
     int order_idx = 0;
-
     if (direction == 1) {
-        // Move right
         for (int i = 0; i < REQUESTS; i++) {
             if (temp[i] >= head) {
                 order[order_idx++] = temp[i];
@@ -153,26 +116,8 @@ void look(int head, int requests[], int order[], int *total_distance, int prev) 
                 current = temp[i];
             }
         }
-        // Move left to remaining requests
         for (int i = REQUESTS - 1; i >= 0; i--) {
             if (temp[i] < head) {
-                order[order_idx++] = temp[i];
-                *total_distance += abs_diff(current, temp[i]);
-                current = temp[i];
-            }
-        }
-    } else {
-        // Move left
-        for (int i = REQUESTS - 1; i >= 0; i--) {
-            if (temp[i] <= head) {
-                order[order_idx++] = temp[i];
-                *total_distance += abs_diff(current, temp[i]);
-                current = temp[i];
-            }
-        }
-        // Move right
-        for (int i = 0; i < REQUESTS; i++) {
-            if (temp[i] > head) {
                 order[order_idx++] = temp[i];
                 *total_distance += abs_diff(current, temp[i]);
                 current = temp[i];
@@ -185,9 +130,6 @@ void look(int head, int requests[], int order[], int *total_distance, int prev) 
 void cscan(int head, int requests[], int order[], int *total_distance) {
     int temp[REQUESTS];
     copy_requests(requests, temp, REQUESTS);
-    int idx = 0;
-
-    // Sort requests
     for (int i = 0; i < REQUESTS - 1; i++) {
         for (int j = 0; j < REQUESTS - i - 1; j++) {
             if (temp[j] > temp[j + 1]) {
@@ -197,12 +139,9 @@ void cscan(int head, int requests[], int order[], int *total_distance) {
             }
         }
     }
-
     *total_distance = 0;
     int current = head;
     int order_idx = 0;
-
-    // Move right to 4999
     for (int i = 0; i < REQUESTS; i++) {
         if (temp[i] >= head) {
             order[order_idx++] = temp[i];
@@ -210,10 +149,8 @@ void cscan(int head, int requests[], int order[], int *total_distance) {
             current = temp[i];
         }
     }
-    // Jump to 0 (wrap around)
     *total_distance += abs_diff(current, 4999) + abs_diff(4999, 0);
     current = 0;
-    // Serve remaining requests
     for (int i = 0; i < REQUESTS; i++) {
         if (temp[i] < head) {
             order[order_idx++] = temp[i];
@@ -227,8 +164,6 @@ void cscan(int head, int requests[], int order[], int *total_distance) {
 void clook(int head, int requests[], int order[], int *total_distance) {
     int temp[REQUESTS];
     copy_requests(requests, temp, REQUESTS);
-
-    // Sort requests
     for (int i = 0; i < REQUESTS - 1; i++) {
         for (int j = 0; j < REQUESTS - i - 1; j++) {
             if (temp[j] > temp[j + 1]) {
@@ -238,12 +173,9 @@ void clook(int head, int requests[], int order[], int *total_distance) {
             }
         }
     }
-
     *total_distance = 0;
     int current = head;
     int order_idx = 0;
-
-    // Move right to max request
     for (int i = 0; i < REQUESTS; i++) {
         if (temp[i] >= head) {
             order[order_idx++] = temp[i];
@@ -251,21 +183,16 @@ void clook(int head, int requests[], int order[], int *total_distance) {
             current = temp[i];
         }
     }
-
-    // Find the minimum request < head
     int min_request = CYLINDERS;
     for (int i = 0; i < REQUESTS; i++) {
         if (temp[i] < head && temp[i] < min_request) {
             min_request = temp[i];
         }
     }
-
-    // Jump to min request and serve remaining requests
     if (min_request != CYLINDERS) {
         *total_distance += abs_diff(current, min_request);
         current = min_request;
         order[order_idx++] = min_request;
-        // Serve remaining requests < head in ascending order
         for (int i = 0; i < REQUESTS; i++) {
             if (temp[i] < head && temp[i] != min_request) {
                 order[order_idx++] = temp[i];
